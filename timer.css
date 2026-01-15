@@ -1,0 +1,54 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+#app{
+    text-align: center;
+}
+
+#timer-display{
+    font-size: 3rem;
+    margin: 2.5rem 0;
+
+}
+
+button{
+    margin: 1.5rem;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 10rem;
+}
+
+#start-btn{
+    background: rgba(12, 243, 31, 0.753);
+    border: 1px solid rgba(12, 243, 31, 0.753);
+    
+
+}
+
+#start-btn:hover{
+    background: rgba(0,0,0);
+    color:rgba(12, 243, 31, 0.753);
+    border: 1px solid rgba(0,0,0);
+}
+
+#pause-btn{
+    background: rgba(235, 219, 8);
+}
+
+#reset-btn{
+    background: rgba(226, 10, 10, 0.904);
+}
+
+.dark-mode{
+
+}
+
+
+.light-mode{
+
+}
+
