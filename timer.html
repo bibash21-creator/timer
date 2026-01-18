@@ -3,16 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowAI Pomo</title>
+    <title>Flow AI Pomo</title>
 
     <!-- CSS -->
      <link rel="stylesheet" href="timer.css">
 
-
 </head>
 <body>
+    <!-- Header -->
+     <header>
+        <div class="brand">
+            <div class="brand-logo" aria-hidden="true">
+            </div>
 
-    <!-- Header and Navigation Menu -->
-    
+            <div class="brand-name">
+                FlowAI Pomo
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="icon-btn" id="analytics" title="Analytics"></button>
+            <button class="icon-btn" id="settings" title="Settings"></button>
+            <button class="connect-btn">Connect</button>
+        </div>
+     </header>
+
+     <!-- Main -->
+      <main>
+        <!-- focus list panel -->
+         <section class="panel" id="focus-panel">
+            <div class="focus-header">
+                <h1>Focus List</h1>
+                <div class="counter" id="task-counter">0/0</div>
+            </div>
+
+            <div class="task-input-row">
+                <input type="text" placeholder="What are we working on?" class="task-input" id="task-input" />
+                <button class="add-btn" id="add-task">+ Add</button>
+            </div>
+
+            <div class="task-list" id="task-list">
+                <div class="subtle">No tasks yet. Plan your flow...</div>
+            </div>
+         </section>
+      </main>
+
+
+    <!-- Js -->
+    <script src="timer.js"></script>   
 </body>
 </html>
