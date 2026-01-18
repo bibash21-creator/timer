@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FlowAI Pomo</title>
+  <style>
+    /* ====== Design System ====== */
+    :root {
+      --bg: #0f1115;
+      --panel: #151922;
+      --panel-2: #1a1f2b;
+      --text: #e8ecf1;
+      --muted: #a9b0bd;
+      --accent: #7c5cff;
+      --accent-2: #ff4d67;
+      --success: #3ddc97;
+      --warning: #ffb020;
+      --border: #232838;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, #121520 0%, #0f1115 40%, #0b0d12 100%);
+      color: var(--text);
+    }
+
+    /* ====== Header ====== */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(28,33,46,0.6), rgba(21,25,34,0.6));
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .brand-logo {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: conic-gradient(from 180deg, #7c5cff, #ff4d67, #3ddc97, #7c5cff);
+      box-shadow: 0 0 24px rgba(124,92,255,0.35);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-btn {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--muted);
+      cursor: pointer;
+      transition: 160ms ease;
+    }
+    .icon-btn:hover { color: var(--text); transform: translateY(-1px); }
+    .connect-btn {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2f40;
+      background: linear-gradient(180deg, #23283a, #1a1f2b);
+      color: var(--text);
+      cursor: pointer;
+      transition: 160ms ease;
+    }
+    .connect-btn:hover { border-color: var(--accent); box-shadow: 0 0 16px rgba(124,92,255,0.25); }
+
+    /* ====== Layout ====== */
+    main {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 18px;
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      min-height: 160px;
+    }
+    .panel h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #cfd6e6;
+      letter-spacing: 0.3px;
+    }
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ====== Focus List ====== */
+    .focus-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .counter {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 8px;
+      border: 1px dashed #2a2f40;
+      border-radius: 8px;
+    }
+    .task-input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .task-input {
+      background: #121622;
+      border: 1px solid #2a2f40;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      outline: none;
+    }
+    .add-btn {
+      background: linear-gradient(180deg, #2b3150, #23283a);
+      border: 1px solid #2a2f40;
+      color: #dfe6f7;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: 160ms ease;
+    }
+    .add-btn:hover { border-color: var(--accent); color: #fff; }
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 120px;
+    }
+    .task-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #2a2f40;
+      border-radius: 10px;
+      background: #121622;
+    }
+    .task-item.completed { opacity: 0.7; border-color: #2f3a58; }
+    .task-title { font-size: 14px; }
+    .task-actions {
+      display: flex; gap: 8px;
+    }
+    .small-btn {
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #2a2f40;
+      background: #1a1f2b;
+      color: #cfd6e6;
+      cursor: pointer;
+    }
+    .small-btn:hover { border-color: var(--accent); color: #fff; }
+
+    /* ====== Timer ====== */
+    .timer-panel { text-align: center; }
+    .mode-tabs {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .tab {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #2a2f40;
+      background: #1a1f2b;
+      color: #cfd6e6;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .tab.active {
+      background: linear-gradient(180deg, #3a2f6b, #2b3150);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(124,92,255,0.25);
+    }
+    .timer-display {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin: 8px 0;
+      text-shadow: 0 0 24px rgba(255,255,255,0.06);
+    }
+    .timer-label {
+      font-size: 12px;
+      color: var(--warning);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .controls {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 10px;
+    }
+    .control-btn {
+      width: 42px; height: 42px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      border: 1px solid #2a2f40;
+      background: #1a1f2b;
+      color: #cfd6e6;
+      cursor: pointer;
+      transition: 160ms ease;
+    }
+    .control-btn.play { background: linear-gradient(180deg, #ff6b80, #ff4d67); color: #fff; border-color: #ff4d67; }
+    .control-btn:hover { transform: translateY(-1px); }
+
+    /* ====== AI Focus Coach ====== */
+    .coach-quote {
+      font-style: italic;
+      color: #d7def0;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .coach-actions {
+      display: flex; gap: 10px;
+    }
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #2a2f40;
+      background: #1a1f2b;
+      color: #cfd6e6;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .pill.precision { border-color: #4aa3ff; color: #eaf4ff; }
+    .pill.gemini { border-color: #7c5cff; color: #efeaff; }
+
+    /* ====== Daily Velocity ====== */
+    .velocity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .metric {
+      padding: 10px;
+      border: 1px solid #2a2f40;
+      border-radius: 10px;
+      background: #121622;
+    }
+    .metric .value { font-size: 18px; font-weight: 700; }
+    .streak.active { border-color: var(--success); box-shadow: 0 0 12px rgba(61,220,151,0.2); }
+    .activity-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #1a1f2b;
+      border: 1px solid #2a2f40;
+      overflow: hidden;
+    }
+    .activity-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7c5cff, #ff4d67);
+      transition: width 300ms ease;
+    }
+
+    /* ====== Footer ====== */
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 14px; }
+    .footer-links a {
+      color: #cfd6e6;
+      text-decoration: none;
+      border-bottom: 1px dashed transparent;
+    }
+    .footer-links a:hover { border-bottom-color: #cfd6e6; }
+
+    /* ====== Responsive ====== */
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ====== Header ====== -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div>FlowAI Pomo</div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" title="Analytics">📈</button>
+      <button class="icon-btn" title="Settings">⚙️</button>
+      <button class="connect-btn">Connect</button>
+    </div>
+  </header>
+
+  <!-- ====== Main ====== -->
+  <main>
+    <!-- Focus List Panel -->
+    <section class="panel" id="focus-panel">
+      <div class="focus-header">
+        <h3>Focus List</h3>
+        <div class="counter" id="task-counter">0/0</div>
+      </div>
+      <div class="task-input-row">
+        <input id="task-input" class="task-input" type="text" placeholder="What are we working on?" />
+        <button id="add-task" class="add-btn">＋ Add</button>
+      </div>
+      <div id="task-list" class="task-list">
+        <div class="subtle">No tasks yet. Plan your flow…</div>
+      </div>
+    </section>
+
+    <!-- Timer Panel -->
+    <section class="panel timer-panel" id="timer-panel">
+      <div class="mode-tabs">
+        <button class="tab active" data-mode="work">Work</button>
+        <button class="tab" data-mode="short">Short</button>
+        <button class="tab" data-mode="long">Long</button>
+      </div>
+      <div id="timer-display" class="timer-display">25:00</div>
+      <div class="timer-label">DEEP WORK</div>
+      <div class="controls">
+        <button id="rewind" class="control-btn" title="Rewind 5m">⏪</button>
+        <button id="play" class="control-btn play" title="Start/Pause">▶</button>
+        <button id="fast" class="control-btn" title="Skip to end">⏩</button>
+      </div>
+    </section>
+
+    <!-- Right Column: Coach + Velocity -->
+    <section class="panel" id="coach-panel">
+      <h3>AI Focus Coach</h3>
+      <div id="coach-quote" class="coach-quote">
+        “Pick one specific, tangible objective for these 25 minutes and close every tab or app that doesn’t directly contribute to achieving it.”
+      </div>
+      <div class="coach-actions">
+        <button class="pill precision" id="precision-mode">PRECISION MODE</button>
+        <button class="pill gemini" id="gemini-insight">GEMINI INSIGHT</button>
+      </div>
+    </section>
+
+    <section class="panel" id="velocity-panel">
+      <h3>Daily Velocity</h3>
+      <div class="velocity-grid">
+        <div class="metric">
+          <div class="subtle">Total Focus</div>
+          <div id="total-focus" class="value">0m</div>
+        </div>
+        <div class="metric streak" id="streak-box">
+          <div class="subtle">Streak</div>
+          <div id="streak-days" class="value">0 Days</div>
+        </div>
+      </div>
+      <div class="subtle">Recent Activity</div>
+      <div class="activity-bar">
+        <div id="activity-fill" class="activity-fill"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====== Footer ====== -->
+  <footer>
+    <div>© 2024 FlowAI Studio. Focus for a better future.</div>
+    <div class="footer-links">
+      <a href="#" rel="noopener">Documentation</a>
+      <a href="#" rel="noopener">Privacy</a>
+    </div>
+  </footer>
+
+  <script>
+    // ====== State ======
+    const durations = { work: 25 * 60, short: 5 * 60, long: 15 * 60 };
+    let mode = 'work';
+    let remaining = durations[mode];
+    let timerId = null;
+    let running = false;
+
+    const tasks = JSON.parse(localStorage.getItem('flowai_tasks') || '[]');
+    const stats = JSON.parse(localStorage.getItem('flowai_stats') || '{"totalFocus":0,"streakDays":0,"lastActive":null,"activity":0}');
+
+    // ====== Elements ======
+    const taskInput = document.getElementById('task-input');
+    const addTaskBtn = document.getElementById('add-task');
+    const taskListEl = document.getElementById('task-list');
+    const taskCounterEl = document.getElementById('task-counter');
+
+    const tabs = document.querySelectorAll('.tab');
+    const timerDisplay = document.getElementById('timer-display');
+    const playBtn = document.getElementById('play');
+    const rewindBtn = document.getElementById('rewind');
+    const fastBtn = document.getElementById('fast');
+
+    const coachQuoteEl = document.getElementById('coach-quote');
+    const precisionBtn = document.getElementById('precision-mode');
+    const geminiBtn = document.getElementById('gemini-insight');
+
+    const totalFocusEl = document.getElementById('total-focus');
+    const streakDaysEl = document.getElementById('streak-days');
+    const streakBoxEl = document.getElementById('streak-box');
+    const activityFillEl = document.getElementById('activity-fill');
+
+    // ====== Utilities ======
+    function fmt(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = Math.floor(sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+    function saveTasks() {
+      localStorage.setItem('flowai_tasks', JSON.stringify(tasks));
+    }
+    function saveStats() {
+      localStorage.setItem('flowai_stats', JSON.stringify(stats));
+    }
+    function todayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+    }
+
+    // ====== Focus List ======
+    function renderTasks() {
+      taskListEl.innerHTML = '';
+      if (tasks.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'subtle';
+        empty.textContent = 'No tasks yet. Plan your flow…';
+        taskListEl.appendChild(empty);
+      } else {
+        tasks.forEach((t, idx) => {
+          const row = document.createElement('div');
+          row.className = 'task-item' + (t.done ? ' completed' : '');
+          const chk = document.createElement('input');
+          chk.type = 'checkbox';
+          chk.checked = t.done;
+          chk.addEventListener('change', () => {
+            t.done = chk.checked;
+            saveTasks();
+            renderTasks();
+            updateCounter();
+          });
+
+          const title = document.createElement('div');
+          title.className = 'task-title';
+          title.textContent = t.title;
+
+          const actions = document.createElement('div');
+          actions.className = 'task-actions';
+
+          const upBtn = document.createElement('button');
+          upBtn.className = 'small-btn';
+          upBtn.textContent = '↑';
+          upBtn.title = 'Move up';
+          upBtn.onclick = () => {
+            if (idx > 0) {
+              const tmp = tasks[idx-1];
+              tasks[idx-1] = tasks[idx];
+              tasks[idx] = tmp;
+              saveTasks(); renderTasks();
+            }
+          };
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'small-btn';
+          delBtn.textContent = '✕';
+          delBtn.title = 'Delete';
+          delBtn.onclick = () => {
+            tasks.splice(idx, 1);
+            saveTasks(); renderTasks(); updateCounter();
+          };
+
+          actions.appendChild(upBtn);
+          actions.appendChild(delBtn);
+
+          row.appendChild(chk);
+          row.appendChild(title);
+          row.appendChild(actions);
+          taskListEl.appendChild(row);
+        });
+      }
+      updateCounter();
+    }
+    function updateCounter() {
+      const total = tasks.length;
+      const done = tasks.filter(t => t.done).length;
+      taskCounterEl.textContent = `${done}/${total}`;
+    }
+    addTaskBtn.addEventListener('click', () => {
+      const val = taskInput.value.trim();
+      if (!val) return;
+      tasks.push({ title: val, done: false });
+      taskInput.value = '';
+      saveTasks();
+      renderTasks();
+    });
+    taskInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addTaskBtn.click();
+    });
+
+    // ====== Timer ======
+    function setMode(m) {
+      mode = m;
+      remaining = durations[mode];
+      timerDisplay.textContent = fmt(remaining);
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+    }
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        pauseTimer();
+        setMode(t.dataset.mode);
+      });
+    });
+
+    function tick() {
+      remaining -= 1;
+      timerDisplay.textContent = fmt(remaining);
+      if (remaining <= 0) {
+        completeSession();
+      }
+    }
+    function startTimer() {
+      if (running) return;
+      running = true;
+      playBtn.textContent = '⏸';
+      timerId = setInterval(tick, 1000);
+    }
+    function pauseTimer() {
+      running = false;
+      playBtn.textContent = '▶';
+      if (timerId) clearInterval(timerId);
+      timerId = null;
+    }
+    function resetTimer() {
+      pauseTimer();
+      remaining = durations[mode];
+      timerDisplay.textContent = fmt(remaining);
+    }
+    function completeSession() {
+      pauseTimer();
+      timerDisplay.textContent = '00:00';
+      // Update stats
+      const sessionMinutes = Math.round(durations[mode] / 60);
+      stats.totalFocus += sessionMinutes;
+      stats.activity = Math.min(100, stats.activity + (mode === 'work' ? 20 : 10));
+      // Streak logic
+      const today = todayStr();
+      if (stats.lastActive && stats.lastActive !== today) {
+        const last = new Date(stats.lastActive);
+        const now = new Date(today);
+        const diff = (now - last) / (1000*60*60*24);
+        if (diff <= 1.5) stats.streakDays += 1;
+        else stats.streakDays = 1;
+      } else if (!stats.lastActive) {
+        stats.streakDays = 1;
+      }
+      stats.lastActive = today;
+      saveStats();
+      renderStats();
+
+      // Auto-switch suggestion
+      if (mode === 'work') setMode('short');
+      else setMode('work');
+      alert('Session complete!');
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (running) pauseTimer(); else startTimer();
+    });
+    rewindBtn.addEventListener('click', () => {
+      remaining = Math.max(0, remaining - 5*60);
+      timerDisplay.textContent = fmt(remaining);
+    });
+    fastBtn.addEventListener('click', () => {
+      remaining = 0;
+      timerDisplay.textContent = '00:00';
+      completeSession();
+    });
+
+    // ====== Coach ======
+    const quotes = [
+      'Pick one specific, tangible objective for these 25 minutes and close every tab or app that doesn’t directly contribute to achieving it.',
+      'Define “done” before you start—write a single sentence describing the finish line.',
+      'Protect your attention—silence notifications and set your phone face down.',
+      'Make progress visible—commit to a tiny deliverable you can ship today.',
+      'If stuck, reduce scope by half and move forward.'
+    ];
+    function randomQuote() {
+      const i = Math.floor(Math.random() * quotes.length);
+      coachQuoteEl.textContent = `“${quotes[i]}”`;
+    }
+    precisionBtn.addEventListener('click', () => {
+      randomQuote();
+    });
+    geminiBtn.addEventListener('click', () => {
+      randomQuote();
+    });
+
+    // ====== Velocity ======
+    function renderStats() {
+      totalFocusEl.textContent = `${stats.totalFocus}m`;
+      streakDaysEl.textContent = `${stats.streakDays} Days`;
+      activityFillEl.style.width = `${stats.activity}%`;
+      streakBoxEl.classList.toggle('active', stats.streakDays >= 3);
+    }
+
+    // ====== Init ======
+    function init() {
+      renderTasks();
+      setMode('work');
+      renderStats();
+    }
+    init();
+  </script>
+</body>
+</html>
